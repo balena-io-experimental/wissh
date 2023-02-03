@@ -3,6 +3,7 @@ package main
 import (
 	"bytes"
 	"fmt"
+	"os"
 
 	"golang.org/x/crypto/ssh"
 )
@@ -12,11 +13,25 @@ type SSHRunner struct {
 }
 
 func NewSSHRunner(user, addr string) (*SSHRunner, error) {
+	pk, err := os.ReadFile("/home/lmb/.ssh/id_rsa_wissh_test") // TODO: Make this configurable
+	if err != nil {
+		return nil, fmt.Errorf("reading private key file: %q", err)
+	}
+	signer, err := ssh.ParsePrivateKey(pk)
+	if err != nil {
+		return nil, fmt.Errorf("getting signer from key: %q", err)
+	}
+
 	config := &ssh.ClientConfig{
-		User:            user,
-		Auth:            []ssh.AuthMethod{},          // TODO: Add support for production devices (they need auth)
+		User: user,
+		Auth: []ssh.AuthMethod{
+			ssh.PublicKeys(signer),
+		},
 		HostKeyCallback: ssh.InsecureIgnoreHostKey(), // TODO: Add proper host key verification
 	}
+
+	config.Auth = append(config.Auth, nil)
+
 	client, err := ssh.Dial("tcp", addr, config)
 	if err != nil {
 		return nil, fmt.Errorf("creating ssh runner client: %q", err)
