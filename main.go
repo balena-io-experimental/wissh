@@ -9,6 +9,7 @@ func main() {
 	runner, err := NewSSHRunner("root", "192.168.100.80:22222")
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Sorry, wissh failed to establish an ssh connection: %v", err)
+		os.Exit(1)
 	}
 
 	cmd := "curl https://api.balena-cloud.com/ping"
