@@ -13,7 +13,6 @@ func main() {
 	a := app.New()
 	w := a.NewWindow("Wissh")
 
-	// w.SetContent(container.NewVBox(widget.NewLabel("É nóissh!")))
 	gui, err := NewGUI()
 	if err != nil {
 		// TODO: We should at least try to show this (also) on a Window.
