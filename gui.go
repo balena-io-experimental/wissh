@@ -19,10 +19,7 @@ type WisshGUI struct {
 }
 
 func NewGUI() (*WisshGUI, error) {
-	root := container.NewVBox()
-	gui := &WisshGUI{
-		Root: root,
-	}
+	gui := &WisshGUI{}
 
 	gui.deviceIP = binding.NewString()
 	err := gui.deviceIP.Set("192.168.100.80")
@@ -42,13 +39,15 @@ func NewGUI() (*WisshGUI, error) {
 		return nil, err
 	}
 
-	root.Add(widget.NewLabel("Configuration"))
-	root.Add(newConfigSection(gui))
-	root.Add(widget.NewLabel("Actions"))
-	root.Add(newActionsSection(gui))
-	root.Add(widget.NewLabel("Results"))
-	root.Add(newResultsSection(gui))
+	top := container.NewVBox()
+	top.Add(widget.NewLabel("Configuration"))
+	top.Add(newConfigSection(gui))
+	top.Add(widget.NewLabel("Actions"))
+	top.Add(newActionsSection(gui))
+	top.Add(widget.NewLabel("Results"))
 
+	results := newResultsSection(gui)
+	root := container.NewBorder(top, nil, nil, nil, results)
 	gui.Root = root
 
 	return gui, nil
