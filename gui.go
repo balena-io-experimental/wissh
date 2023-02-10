@@ -13,6 +13,9 @@ type WisshGUI struct {
 	deviceIP   binding.String
 	sshPort    binding.String
 	sshKeyFile binding.String
+
+	theButton  *widget.Button
+	theResults *widget.Entry
 }
 
 func NewGUI() (*WisshGUI, error) {
@@ -41,8 +44,10 @@ func NewGUI() (*WisshGUI, error) {
 
 	root.Add(widget.NewLabel("Configuration"))
 	root.Add(newConfigSection(gui))
+	root.Add(widget.NewLabel("Actions"))
+	root.Add(newActionsSection(gui))
 	root.Add(widget.NewLabel("Results"))
-	root.Add(newResultsSection())
+	root.Add(newResultsSection(gui))
 
 	gui.Root = root
 
@@ -82,6 +87,10 @@ func (gui *WisshGUI) SSHKeyFile() string {
 	}
 }
 
+func (gui *WisshGUI) SetButtonAction(action func()) {
+	gui.theButton.OnTapped = action
+}
+
 func newConfigSection(gui *WisshGUI) fyne.CanvasObject {
 	deviceIPEntry := widget.NewEntry()
 	deviceIPEntry.Bind(gui.deviceIP)
@@ -103,8 +112,14 @@ func newConfigSection(gui *WisshGUI) fyne.CanvasObject {
 	return form
 }
 
-func newResultsSection() fyne.CanvasObject {
+func newActionsSection(gui *WisshGUI) fyne.CanvasObject {
+	button := widget.NewButton("Diagnose!", func() {})
+	gui.theButton = button
+	return button
+}
+
+func newResultsSection(gui *WisshGUI) fyne.CanvasObject {
 	results := widget.NewMultiLineEntry()
-	results.Disable()
+	gui.theResults = results
 	return results
 }
