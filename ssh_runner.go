@@ -12,8 +12,8 @@ type SSHRunner struct {
 	client *ssh.Client
 }
 
-func NewSSHRunner(user, addr string) (*SSHRunner, error) {
-	pk, err := os.ReadFile("/home/lmb/.ssh/id_rsa_wissh_test") // TODO: Make this configurable
+func NewSSHRunner(user, addr, keyFile string) (*SSHRunner, error) {
+	pk, err := os.ReadFile(keyFile)
 	if err != nil {
 		return nil, fmt.Errorf("reading private key file: %q", err)
 	}

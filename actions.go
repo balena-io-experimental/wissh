@@ -20,7 +20,7 @@ func runChecksFunc(gui *WisshGUI) func() {
 			dialog.ShowError(fmt.Errorf(msg+": %w", err), fyne.CurrentApp().Driver().AllWindows()[0])
 		}
 
-		runner, err := NewSSHRunner("root", gui.DeviceIP()+":"+gui.SSHPort())
+		runner, err := NewSSHRunner("root", gui.DeviceIP()+":"+gui.SSHPort(), gui.SSHKeyFile())
 		if err != nil {
 			showError("Failed to establish an ssh connection", err)
 			return
