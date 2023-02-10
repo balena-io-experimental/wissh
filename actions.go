@@ -37,8 +37,14 @@ func runChecksFunc(gui *WisshGUI) func() {
 			return nil
 		}
 
-		runCommand(`curl https://api.balena-cloud.com/ping`)
-		runCommand(`nc -w 5 -G 1 cloudlink.balena-cloud.com 443 && echo "Reachable." || echo "Not reachable."`)
-		runCommand(`curl -v https://registry2.balena-cloud.com`)
+		if err := runCommand(`curl https://api.balena-cloud.com/ping`); err != nil {
+			return
+		}
+		if err := runCommand(`nc -w 5 -G 1 cloudlink.balena-cloud.com 443 && echo "Reachable." || echo "Not reachable."`); err != nil {
+			return
+		}
+		if err := runCommand(`curl -v https://registry2.balena-cloud.com`); err != nil {
+			return
+		}
 	}
 }

@@ -9,7 +9,6 @@ import (
 )
 
 func main() {
-
 	a := app.New()
 	w := a.NewWindow("Wissh")
 
