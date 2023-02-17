@@ -1,6 +1,8 @@
 package main
 
 import (
+	"os"
+
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/data/binding"
@@ -34,7 +36,14 @@ func NewGUI() (*WisshGUI, error) {
 	}
 
 	gui.sshKeyFile = binding.NewString()
-	err = gui.sshKeyFile.Set("/home/lmb/.ssh/id_rsa_wissh_test")
+
+	homeDir, err := os.UserHomeDir()
+
+	if err != nil {
+		return nil, err
+	}
+
+	err = gui.sshKeyFile.Set(homeDir + "/.ssh/id_rsa")
 	if err != nil {
 		return nil, err
 	}
