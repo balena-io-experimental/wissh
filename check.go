@@ -3,10 +3,17 @@ package main
 import (
 	"fmt"
 	"strconv"
+	"strings"
 )
 
 // Check defines how any of the tests we can run looks like.
 type Check interface {
+
+	// Name returns a user-friendly name for the check. This is meant to be
+	// displayed in the UI to identify the check and should give the user an
+	// idea of what it does.
+	Name() string
+
 	// Run runs the test. The return value tells if there was some error while
 	// running the Check, not if the check has passed.
 	//
@@ -26,14 +33,19 @@ type Check interface {
 	// The first return value tells if the check actually has remarks. The
 	// second one contains the remarks themselves, as a Markdown string.
 	IlluminatingRemarks() (bool, string)
+
+	// Details returns details about the execution of the check. This should
+	// include all the low-level details a more advanced user could make good
+	// use of.
+	//
+	// The first return value tells if the check actually has details. The
+	// second one contains the details themselves, as a Markdown string.
+	Details() (bool, string)
 }
 
 // SSHCommand provides some boilerplate for implementing a Check that works by
 // running a SSH command on the device.
 type SSHCommand struct {
-	// The user that will run the SSH command. Must be set before calling Run.
-	User string
-
 	// The IP address of the device in which we'll run the SSH command. Must be
 	// set before calling Run.
 	IP string
@@ -78,11 +90,14 @@ func (c *SSHCommand) Run() error {
 		return fmt.Errorf("running ssh command: %w", err)
 	}
 
-	// Get the status code from the SSH command.
+	// Get the status code from the SSH command. We programmatically discard the
+	// trailing line end instead of using `echo -n` just be avoid issues with
+	// some hypothetical (maybe old) version of `echo` that can't handle `-n`.
 	stdOut, _, err := runner.Run("echo $?")
 	if err != nil {
 		return fmt.Errorf("getting ssh command exit status: %w", err)
 	}
+	stdOut = strings.Split(stdOut, "\n")[0]
 
 	c.ExitStatus, err = strconv.Atoi(stdOut)
 	if err != nil {
@@ -92,11 +107,9 @@ func (c *SSHCommand) Run() error {
 	return nil
 }
 
-// CommonInfo returns a Markdown string containing the common information we may
-// want to show for every SSH command we run.
-func (c *SSHCommand) CommonInfo() string {
-	return fmt.Sprintf("SSH command: `%v`\n\n", c.Command) +
-		fmt.Sprintf("Exit status: `%v`\n\n", c.ExitStatus) +
-		fmt.Sprintf("Standard output:\n\n```\n%v\n```\n\n", c.StdOut) +
-		fmt.Sprintf("Standard error:\n\n```\n%v\n```\n\n", c.StdErr)
+func (c *SSHCommand) Details() (bool, string) {
+	return true, fmt.Sprintf("**SSH command:** `%v`\n\n", c.Command) +
+		fmt.Sprintf("**Exit status:** `%v`\n\n", c.ExitStatus) +
+		fmt.Sprintf("**Standard output:**\n\n```\n%v\n```\n\n", c.StdOut) +
+		fmt.Sprintf("**Standard error:**\n\n```\n%v\n```\n\n", c.StdErr)
 }

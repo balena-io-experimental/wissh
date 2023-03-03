@@ -4,6 +4,21 @@ type pingAPI struct {
 	SSHCommand
 }
 
+func newPingAPI(ip, port, sshKeyFile string) *pingAPI {
+	return &pingAPI{
+		SSHCommand: SSHCommand{
+			Command:    "curl https://api.balena-cloud.com/ping",
+			IP:         ip,
+			Port:       port,
+			SSHKeyFile: sshKeyFile,
+		},
+	}
+}
+
+func (c *pingAPI) Name() string {
+	return "Ping API Server"
+}
+
 func (c *pingAPI) Passed() bool {
 	return c.StdOut == "OK"
 }

@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"os"
 
 	"fyne.io/fyne/v2"
@@ -17,7 +18,7 @@ type WisshGUI struct {
 	sshKeyFile binding.String
 
 	theButton  *widget.Button
-	theResults *widget.Entry
+	theResults *fyne.Container
 }
 
 func NewGUI() (*WisshGUI, error) {
@@ -127,7 +128,43 @@ func newActionsSection(gui *WisshGUI) fyne.CanvasObject {
 }
 
 func newResultsSection(gui *WisshGUI) fyne.CanvasObject {
-	results := widget.NewMultiLineEntry()
+	results := container.NewVBox()
 	gui.theResults = results
 	return results
+}
+
+//
+// Check UI
+//
+
+// type CheckUI struct {
+// 	// root fyne.CanvasObject
+// 	root *fyne.Container
+// }
+
+func newCheckUI(check Check, err error) fyne.CanvasObject {
+	top := container.NewVBox()
+	top.Add(widget.NewRichTextFromMarkdown("## " + check.Name()))
+	status := "Passed!"
+
+	if err != nil {
+		status = fmt.Sprintf("Couldn't run the test: %v", err)
+	} else if !check.Passed() {
+		status = "FAILED!"
+	}
+	top.Add(widget.NewLabel(status))
+
+	// TODO: Control flow is ugly here!
+	if err != nil {
+		return top
+	}
+
+	if ok, remarks := check.IlluminatingRemarks(); ok {
+		top.Add(widget.NewRichTextFromMarkdown(remarks))
+	}
+	if ok, details := check.Details(); ok {
+		top.Add(widget.NewRichTextFromMarkdown(details))
+	}
+
+	return top
 }
