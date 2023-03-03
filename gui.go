@@ -160,8 +160,23 @@ func newCheckUI(check Check, err error) fyne.CanvasObject {
 		top.Add(widget.NewRichTextFromMarkdown(remarks))
 	}
 	if ok, details := check.Details(); ok {
+		detailsBox := container.NewVBox()
 		scroll := container.NewHScroll(widget.NewRichTextFromMarkdown(details))
-		top.Add(scroll)
+		scroll.Hide()
+		toggleButton := widget.NewButton("Show Details", nil)
+		toggleButton.OnTapped = func() {
+			if scroll.Visible() {
+				scroll.Hide()
+				toggleButton.SetText("Show Details")
+			} else {
+				scroll.Show()
+				toggleButton.SetText("Hide Details")
+			}
+		}
+
+		detailsBox.Add(container.NewHBox(toggleButton))
+		detailsBox.Add(scroll)
+		top.Add(detailsBox)
 	}
 
 	return top
