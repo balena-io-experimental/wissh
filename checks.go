@@ -31,7 +31,7 @@ func (c *pingAPI) IlluminatingRemarks() (bool, string) {
 	}
 
 	return true,
-		"We failed to reach the balenaAPI server.\n\n" +
+		"We failed to reach the balena API server.\n\n" +
 			"This means there's something wrong on the path from the device to balenaCloud.\n" +
 			"Perhaps you a have a firewall blocking outgoing requests to `https://api.balena-cloud.com/ping`?\n"
 }

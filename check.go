@@ -108,8 +108,8 @@ func (c *SSHCommand) Run() error {
 }
 
 func (c *SSHCommand) Details() (bool, string) {
-	return true, fmt.Sprintf("**SSH command:** `%v`\n\n", c.Command) +
-		fmt.Sprintf("**Exit status:** `%v`\n\n", c.ExitStatus) +
+	return true, fmt.Sprintf("**SSH command:**\n\n`%v`\n\n", c.Command) +
+		fmt.Sprintf("**Exit status:**\n\n`%v`\n\n", c.ExitStatus) +
 		fmt.Sprintf("**Standard output:**\n\n```\n%v\n```\n\n", c.StdOut) +
 		fmt.Sprintf("**Standard error:**\n\n```\n%v\n```\n\n", c.StdErr)
 }

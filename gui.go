@@ -49,16 +49,16 @@ func NewGUI() (*WisshGUI, error) {
 		return nil, err
 	}
 
-	top := container.NewVBox()
-	top.Add(widget.NewLabel("Configuration"))
-	top.Add(newConfigSection(gui))
-	top.Add(widget.NewLabel("Actions"))
-	top.Add(newActionsSection(gui))
-	top.Add(widget.NewLabel("Results"))
+	vbox := container.NewVBox()
+	vbox.Add(widget.NewRichTextFromMarkdown("# Configuration"))
+	vbox.Add(newConfigSection(gui))
+	vbox.Add(widget.NewRichTextFromMarkdown("# Actions"))
+	vbox.Add(newActionsSection(gui))
+	vbox.Add(widget.NewRichTextFromMarkdown("# Results"))
+	vbox.Add(newResultsSection(gui))
 
-	results := newResultsSection(gui)
-	root := container.NewBorder(top, nil, nil, nil, results)
-	gui.Root = root
+	top := container.NewVScroll(vbox)
+	gui.Root = top
 
 	return gui, nil
 }
@@ -122,9 +122,11 @@ func newConfigSection(gui *WisshGUI) fyne.CanvasObject {
 }
 
 func newActionsSection(gui *WisshGUI) fyne.CanvasObject {
+	top := container.NewHBox()
 	button := widget.NewButton("Diagnose!", func() {})
 	gui.theButton = button
-	return button
+	top.Add(button)
+	return top
 }
 
 func newResultsSection(gui *WisshGUI) fyne.CanvasObject {
@@ -136,11 +138,6 @@ func newResultsSection(gui *WisshGUI) fyne.CanvasObject {
 //
 // Check UI
 //
-
-// type CheckUI struct {
-// 	// root fyne.CanvasObject
-// 	root *fyne.Container
-// }
 
 func newCheckUI(check Check, err error) fyne.CanvasObject {
 	top := container.NewVBox()
@@ -163,7 +160,8 @@ func newCheckUI(check Check, err error) fyne.CanvasObject {
 		top.Add(widget.NewRichTextFromMarkdown(remarks))
 	}
 	if ok, details := check.Details(); ok {
-		top.Add(widget.NewRichTextFromMarkdown(details))
+		scroll := container.NewHScroll(widget.NewRichTextFromMarkdown(details))
+		top.Add(scroll)
 	}
 
 	return top
