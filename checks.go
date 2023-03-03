@@ -20,7 +20,7 @@ func newPingAPI(ip, port, sshKeyFile string) *pingAPI {
 }
 
 func (c *pingAPI) Name() string {
-	return "Ping the API Server"
+	return "Connect With the API Server"
 }
 
 func (c *pingAPI) Passed() bool {
@@ -60,7 +60,7 @@ func newPingContainerRegistry(ip, port, sshKeyFile string) *pingContainerRegistr
 }
 
 func (c *pingContainerRegistry) Name() string {
-	return "Ping the Container Registry"
+	return "Connect With the Container Registry"
 }
 
 func (c *pingContainerRegistry) Passed() bool {
