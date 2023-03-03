@@ -6,6 +6,10 @@ func runChecksFunc(gui *WisshGUI) func() {
 		// dummy ssh command), to catch any obvious errors that would cause all
 		// tests to fail.
 
+		// TODO: Consider running these tests asynchronously, and make the UI
+		// behave nicely as the checks run. For example, some kind of progress
+		// reporting, and disabling the button during the process.
+
 		deviceIP := gui.DeviceIP()
 		sshPort := gui.SSHPort()
 		sshKeyFile := gui.SSHKeyFile()
