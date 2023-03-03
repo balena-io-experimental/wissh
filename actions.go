@@ -21,9 +21,14 @@ func runChecksFunc(gui *WisshGUI) func() {
 			newPingContainerRegistry(deviceIP, sshPort, sshKeyFile),
 		}
 
+		oldText := gui.theButton.Text
+		gui.theButton.SetText("Running...")
+		gui.theButton.Disable()
 		for _, check := range checks {
 			err := check.Run()
 			gui.theResults.Add(newCheckUI(check, err))
 		}
+		gui.theButton.SetText(oldText)
+		gui.theButton.Enable()
 	}
 }
