@@ -12,8 +12,14 @@ func runChecksFunc(gui *WisshGUI) func() {
 
 		gui.theResults.RemoveAll()
 
-		check := newPingAPI(deviceIP, sshPort, sshKeyFile)
-		err := check.Run()
-		gui.theResults.Add(newCheckUI(check, err))
+		checks := []Check{
+			newPingAPI(deviceIP, sshPort, sshKeyFile),
+			newPingContainerRegistry(deviceIP, sshPort, sshKeyFile),
+		}
+
+		for _, check := range checks {
+			err := check.Run()
+			gui.theResults.Add(newCheckUI(check, err))
+		}
 	}
 }

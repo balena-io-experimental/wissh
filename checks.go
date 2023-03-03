@@ -1,5 +1,9 @@
 package main
 
+//
+// Ping API Server
+//
+
 type pingAPI struct {
 	SSHCommand
 }
@@ -16,7 +20,7 @@ func newPingAPI(ip, port, sshKeyFile string) *pingAPI {
 }
 
 func (c *pingAPI) Name() string {
-	return "Ping API Server"
+	return "Ping the API Server"
 }
 
 func (c *pingAPI) Passed() bool {
@@ -35,3 +39,46 @@ func (c *pingAPI) IlluminatingRemarks() (bool, string) {
 			"This means there's something wrong on the path from the device to balenaCloud.\n" +
 			"Perhaps you a have a firewall blocking outgoing requests to `https://api.balena-cloud.com/ping`?\n"
 }
+
+//
+// Ping Container Registry
+//
+
+type pingContainerRegistry struct {
+	SSHCommand
+}
+
+func newPingContainerRegistry(ip, port, sshKeyFile string) *pingContainerRegistry {
+	return &pingContainerRegistry{
+		SSHCommand: SSHCommand{
+			Command:    "curl https://registry2.balena-cloud.com",
+			IP:         ip,
+			Port:       port,
+			SSHKeyFile: sshKeyFile,
+		},
+	}
+}
+
+func (c *pingContainerRegistry) Name() string {
+	return "Ping the Container Registry"
+}
+
+func (c *pingContainerRegistry) Passed() bool {
+	return c.ExitStatus == 0
+}
+
+func (c *pingContainerRegistry) IlluminatingRemarks() (bool, string) {
+	if c.Passed() {
+		return true,
+			"We reached the balena container registry.\n\n" +
+				"This means the device should be able to pull Docker images.\n"
+	}
+
+	return true,
+		"We failed to reach the balena container container registry.\n\n" +
+			"This means the device won't be able to pull Docker images.\n" +
+			"Perhaps you a have a firewall blocking outgoing requests to `https://registry2.balena-cloud.com`?\n"
+}
+
+// TODO: nc -w 5 -G 1 cloudlink.balena-cloud.com 443 && echo "Reachable." || echo "Not reachable."`)
+// Or an equivalent that works...
