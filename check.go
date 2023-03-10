@@ -57,8 +57,10 @@ type SSHCommand struct {
 	// The path to the file with the private key to use when authenticating with
 	// the device. Must be set before calling Run.
 	//
-	// TODO: This is required for now. We should allow authentication less
-	// access (for devices in development mode).
+	// TODO: This is required for now, and must point to a valid file. This
+	// doesn't prevent us from connecting to devices in development mode (which
+	// don't need authentication by default), but is kinda odd. Should be
+	// optional.
 	SSHKeyFile string
 
 	// Command contains the command to run over SSH. Must be set before calling

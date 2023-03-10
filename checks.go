@@ -79,6 +79,3 @@ func (c *pingContainerRegistry) IlluminatingRemarks() (bool, string) {
 			"This means the device won't be able to pull Docker images.\n" +
 			"Perhaps you a have a firewall blocking outgoing requests to `https://registry2.balena-cloud.com`?\n"
 }
-
-// TODO: nc -w 5 -G 1 cloudlink.balena-cloud.com 443 && echo "Reachable." || echo "Not reachable."`)
-// Or an equivalent that works...
