@@ -33,12 +33,7 @@ func runChecksFunc(gui *WisshGUI) func() {
 			return
 		}
 
-		checks := []wissh.Check{
-			checks.NewPingAPI(deviceIP, sshPort, sshKeyFile),
-			checks.NewPingContainerRegistry(deviceIP, sshPort, sshKeyFile),
-		}
-
-		for _, check := range checks {
+		for _, check := range checks.All(deviceIP, sshPort, sshKeyFile) {
 			err := check.Run()
 			gui.theResults.Add(newCheckUI(check, err))
 		}

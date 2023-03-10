@@ -15,6 +15,16 @@ or less like this:
   through balenaCloud.
 * Helps to figure out why a device is offline and bring it back online.
 
+## How can I add a new check?
+
+There are two steps:
+
+1. **Implement check.** In summary, a check is anything that implements the
+   `wissh.Check` interface. We keep checks under `pkg/checks`, one check per
+   file. Check `pkg/checksping_api.go` for a simple example.
+2. **Add your check to the list of checks to execute.** Just add it to the
+   `checks.All()` function, in `pkg/checks/check_list.go`.
+
 ## Building
 
 This is currently being developed under Linux. It should be buildable for all
