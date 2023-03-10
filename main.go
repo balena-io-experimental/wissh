@@ -12,7 +12,7 @@ func main() {
 	a := app.New()
 	w := a.NewWindow("Wissh")
 
-	gui, err := NewGUI()
+	gui, err := NewGUI(w)
 	if err != nil {
 		// TODO: We should at least try to show this (also) on a Window.
 		fmt.Fprintf(os.Stderr, "Oopsie, error initializing Wissh: %v\n", err)

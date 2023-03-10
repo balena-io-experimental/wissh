@@ -1,11 +1,13 @@
 package main
 
+import (
+	"fmt"
+
+	"fyne.io/fyne/v2/dialog"
+)
+
 func runChecksFunc(gui *WisshGUI) func() {
 	return func() {
-		// TODO: Before running any checks, try running a sanity check (like a
-		// dummy ssh command), to catch any obvious errors that would cause all
-		// tests to fail.
-
 		// TODO: Consider running these tests asynchronously, and make the UI
 		// behave nicely as the checks run. For example, some kind of progress
 		// reporting, and disabling the button during the process.
@@ -16,19 +18,47 @@ func runChecksFunc(gui *WisshGUI) func() {
 
 		gui.theResults.RemoveAll()
 
+		oldText := gui.theButton.Text
+		gui.theButton.SetText("Running...")
+		gui.theButton.Disable()
+		defer func() {
+			gui.theButton.SetText(oldText)
+			gui.theButton.Enable()
+		}()
+
+		if err := canSSHToDevice(deviceIP, sshPort, sshKeyFile); err != nil {
+			dialog.ShowError(err, gui.mainWindow)
+			return
+		}
+
 		checks := []Check{
 			newPingAPI(deviceIP, sshPort, sshKeyFile),
 			newPingContainerRegistry(deviceIP, sshPort, sshKeyFile),
 		}
 
-		oldText := gui.theButton.Text
-		gui.theButton.SetText("Running...")
-		gui.theButton.Disable()
 		for _, check := range checks {
 			err := check.Run()
 			gui.theResults.Add(newCheckUI(check, err))
 		}
-		gui.theButton.SetText(oldText)
-		gui.theButton.Enable()
 	}
+}
+
+// canSSHToDevice checks if we can SSH to to the device. If this fails, it
+// doesn't make sense to even try running the actual checks (which all depend on
+// SSH). The error return value explains what when wrong (likely to include not
+// very user-friendly information). A nil return value means that we can SSH to
+// the device.
+func canSSHToDevice(deviceIP, sshPort, sshKeyFile string) error {
+	runner, err := NewSSHRunner("root", deviceIP+":"+sshPort, sshKeyFile)
+	if err != nil {
+		return fmt.Errorf("Error while preparing to run SSH command: %w", err)
+	}
+	defer runner.Destroy()
+
+	_, _, err = runner.Run("ls")
+	if err != nil {
+		return fmt.Errorf("Error while running SSH command: %w", err)
+	}
+
+	return nil
 }

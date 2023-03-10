@@ -19,10 +19,13 @@ type WisshGUI struct {
 
 	theButton  *widget.Button
 	theResults *fyne.Container
+	mainWindow fyne.Window
 }
 
-func NewGUI() (*WisshGUI, error) {
-	gui := &WisshGUI{}
+func NewGUI(mainWindow fyne.Window) (*WisshGUI, error) {
+	gui := &WisshGUI{
+		mainWindow: mainWindow,
+	}
 
 	gui.deviceIP = binding.NewString()
 	err := gui.deviceIP.Set("192.168.100.80")
