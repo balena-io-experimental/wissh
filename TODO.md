@@ -5,6 +5,11 @@
 * Differences in balenaOS versions may cause some checks to fail (e.g., because
   of differences in the supported command-line options for certain commands).
   Would be nice to test a variety of OS versions.
+* Current architecture creates an SSH connection for each check. We can be more
+  efficient by reusing a single connection. (Now not sure how much gain it would
+  bring, not what downsides could this have. I guess reusing the connection
+  would allow early checks to change the environment for later ones, which could
+  cause tricky bugs.)
 
 ## Checks we may want to add
 
