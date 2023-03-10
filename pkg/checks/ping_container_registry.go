@@ -1,6 +1,16 @@
 package checks
 
-import "github.com/balena-io-experimental/wissh/pkg/wissh"
+import (
+	_ "embed"
+
+	"github.com/balena-io-experimental/wissh/pkg/wissh"
+)
+
+//go:embed ping_container_registry_remarks_success.md
+var pingContainerRegistryRemarksSuccess string
+
+//go:embed ping_container_registry_remarks_failure.md
+var pingContainerRegistryRemarksFailure string
 
 type pingContainerRegistry struct {
 	wissh.SSHCommand
@@ -28,13 +38,8 @@ func (c *pingContainerRegistry) Passed() bool {
 
 func (c *pingContainerRegistry) IlluminatingRemarks() (bool, string) {
 	if c.Passed() {
-		return true,
-			"We reached the balena container registry.\n\n" +
-				"This means the device should be able to pull Docker images.\n"
+		return true, pingContainerRegistryRemarksSuccess
 	}
 
-	return true,
-		"We failed to reach the balena container container registry.\n\n" +
-			"This means the device won't be able to pull Docker images.\n" +
-			"Perhaps you a have a firewall blocking outgoing requests to `https://registry2.balena-cloud.com`?\n"
+	return true, pingContainerRegistryRemarksFailure
 }

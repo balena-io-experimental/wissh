@@ -1,6 +1,16 @@
 package checks
 
-import "github.com/balena-io-experimental/wissh/pkg/wissh"
+import (
+	_ "embed"
+
+	"github.com/balena-io-experimental/wissh/pkg/wissh"
+)
+
+//go:embed ping_api_remarks_success.md
+var pingAPIRemarksSuccess string
+
+//go:embed ping_api_remarks_failure.md
+var pingAPIRemarksFailure string
 
 type pingAPI struct {
 	wissh.SSHCommand
@@ -28,13 +38,8 @@ func (c *pingAPI) Passed() bool {
 
 func (c *pingAPI) IlluminatingRemarks() (bool, string) {
 	if c.Passed() {
-		return true,
-			"We reached the balena API server.\n\n" +
-				"This means the network path from the device to balenaCloud is working.\n"
+		return true, pingAPIRemarksSuccess
 	}
 
-	return true,
-		"We failed to reach the balena API server.\n\n" +
-			"This means there's something wrong on the path from the device to balenaCloud.\n" +
-			"Perhaps you a have a firewall blocking outgoing requests to `https://api.balena-cloud.com/ping`?\n"
+	return true, pingAPIRemarksFailure
 }
