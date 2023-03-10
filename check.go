@@ -84,6 +84,7 @@ func (c *SSHCommand) Run() error {
 	if err != nil {
 		return fmt.Errorf("preparing to run ssh command: %w", err)
 	}
+	defer runner.Destroy()
 
 	c.StdOut, c.StdErr, err = runner.Run(c.Command)
 	if err != nil {
