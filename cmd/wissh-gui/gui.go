@@ -8,6 +8,7 @@ import (
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/data/binding"
 	"fyne.io/fyne/v2/widget"
+	"github.com/balena-io-experimental/wissh/pkg/wissh"
 )
 
 type WisshGUI struct {
@@ -142,7 +143,7 @@ func newResultsSection(gui *WisshGUI) fyne.CanvasObject {
 // Check UI
 //
 
-func newCheckUI(check Check, err error) fyne.CanvasObject {
+func newCheckUI(check wissh.Check, err error) fyne.CanvasObject {
 	top := container.NewVBox()
 	top.Add(widget.NewRichTextFromMarkdown("## " + check.Name()))
 	status := "Passed!"

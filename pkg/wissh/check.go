@@ -1,4 +1,4 @@
-package main
+package wissh
 
 import (
 	"fmt"
@@ -8,7 +8,6 @@ import (
 
 // Check defines how any of the tests we can run looks like.
 type Check interface {
-
 	// Name returns a user-friendly name for the check. This is meant to be
 	// displayed in the UI to identify the check and should give the user an
 	// idea of what it does.

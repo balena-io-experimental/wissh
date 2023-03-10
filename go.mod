@@ -1,4 +1,4 @@
-module github.com/lmbarros/wissh
+module github.com/balena-io-experimental/wissh
 
 go 1.19
 

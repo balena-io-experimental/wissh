@@ -1,4 +1,4 @@
-package main
+package wissh
 
 import (
 	"bytes"
@@ -8,10 +8,18 @@ import (
 	"golang.org/x/crypto/ssh"
 )
 
+// SSHRunner allows to run SSH commands. Technically, it's a wrapper around Go's
+// ssh.Client.
 type SSHRunner struct {
 	client *ssh.Client
 }
 
+// NewSSHRunner creates a new SSHRunner. It will try to start an SSH session by
+// user, on a server located at addr, and autheticating using the key at
+// keyFile. Note that addr shall include the port, like "10.0.0.1:22222").
+//
+// You must call Destroy() on the returned SSHRunner when it is no longer
+// needed.
 func NewSSHRunner(user, addr, keyFile string) (*SSHRunner, error) {
 	pk, err := os.ReadFile(keyFile)
 	if err != nil {
@@ -42,10 +50,12 @@ func NewSSHRunner(user, addr, keyFile string) (*SSHRunner, error) {
 	}, nil
 }
 
+// Destroy frees all resources used by the Runner.
 func (s *SSHRunner) Destroy() {
 	s.client.Close()
 }
 
+// Run runs the cmd command over SSH.
 func (s *SSHRunner) Run(cmd string) (stdOut string, stdErr string, err error) {
 	session, err := s.client.NewSession()
 	if err != nil {

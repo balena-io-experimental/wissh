@@ -39,5 +39,5 @@ apt-get install ca-certificates golang git libx11-dev libxcursor-dev libxrandr-d
 To actually build, just issue
 
 ```sh
-go build .
+go build ./cmd/wissh-gui
 ```

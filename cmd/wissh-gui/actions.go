@@ -4,6 +4,8 @@ import (
 	"fmt"
 
 	"fyne.io/fyne/v2/dialog"
+	"github.com/balena-io-experimental/wissh/pkg/checks"
+	"github.com/balena-io-experimental/wissh/pkg/wissh"
 )
 
 func runChecksFunc(gui *WisshGUI) func() {
@@ -31,9 +33,9 @@ func runChecksFunc(gui *WisshGUI) func() {
 			return
 		}
 
-		checks := []Check{
-			newPingAPI(deviceIP, sshPort, sshKeyFile),
-			newPingContainerRegistry(deviceIP, sshPort, sshKeyFile),
+		checks := []wissh.Check{
+			checks.NewPingAPI(deviceIP, sshPort, sshKeyFile),
+			checks.NewPingContainerRegistry(deviceIP, sshPort, sshKeyFile),
 		}
 
 		for _, check := range checks {
@@ -49,7 +51,7 @@ func runChecksFunc(gui *WisshGUI) func() {
 // very user-friendly information). A nil return value means that we can SSH to
 // the device.
 func canSSHToDevice(deviceIP, sshPort, sshKeyFile string) error {
-	runner, err := NewSSHRunner("root", deviceIP+":"+sshPort, sshKeyFile)
+	runner, err := wissh.NewSSHRunner("root", deviceIP+":"+sshPort, sshKeyFile)
 	if err != nil {
 		return fmt.Errorf("Error while preparing to run SSH command: %w", err)
 	}
