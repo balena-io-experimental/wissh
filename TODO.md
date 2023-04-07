@@ -27,3 +27,5 @@
     * Actually a tricky thing to check. IIUC, we'd need to compare the results
       with running the same command on a computer that is known to not be behind
       a DPI firewall.
+* Any way to check for cellular carriers that drop balena traffic? Like [on this
+  ticket](https://jel.ly.fish/support-thread-1-0-0-front-cnv-dyouyvh).
