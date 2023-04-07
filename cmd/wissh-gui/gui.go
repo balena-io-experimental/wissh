@@ -161,7 +161,9 @@ func newCheckUI(check wissh.Check, err error) fyne.CanvasObject {
 	}
 
 	if ok, remarks := check.IlluminatingRemarks(); ok {
-		top.Add(widget.NewRichTextFromMarkdown(remarks))
+		mdView := widget.NewRichTextFromMarkdown(remarks)
+		mdView.Wrapping = fyne.TextWrapWord
+		top.Add(mdView)
 	}
 	if ok, details := check.Details(); ok {
 		detailsBox := container.NewVBox()
