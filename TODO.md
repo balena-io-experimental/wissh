@@ -13,8 +13,6 @@
 
 ## Checks we may want to add
 
-* `nc -w 5 -G 1 cloudlink.balena-cloud.com 443 && echo "Reachable." || echo "Not
-  reachable."` Or an equivalent to this that works (I am not sure this does).
 * IPv6 vs IPv4 variations of our pings to backend. Like `ping -4
   api.balena-cloud.com`.
 * Any relevant DNS checks?

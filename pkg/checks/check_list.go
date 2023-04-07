@@ -7,5 +7,6 @@ func All(deviceIP, sshPort, sshKeyFile string) []wissh.Check {
 	return []wissh.Check{
 		NewPingAPI(deviceIP, sshPort, sshKeyFile),
 		NewPingContainerRegistry(deviceIP, sshPort, sshKeyFile),
+		NewReachCLoudlink(deviceIP, sshPort, sshKeyFile),
 	}
 }
