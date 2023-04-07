@@ -11,6 +11,12 @@ import (
 	"github.com/balena-io-experimental/wissh/pkg/wissh"
 )
 
+const (
+	PREF_IP          = "DeviceIP"
+	PREF_PORT        = "DevicePort"
+	PREF_PRIVATE_KEY = "PrivateKey"
+)
+
 type WisshGUI struct {
 	Root fyne.CanvasObject
 
@@ -23,39 +29,39 @@ type WisshGUI struct {
 	mainWindow fyne.Window
 }
 
-func NewGUI(mainWindow fyne.Window) (*WisshGUI, error) {
+func NewGUI(app fyne.App, mainWindow fyne.Window) (*WisshGUI, error) {
 	gui := &WisshGUI{
 		mainWindow: mainWindow,
 	}
 
+	prefIP := app.Preferences().StringWithFallback(PREF_IP, "192.168.100.99")
 	gui.deviceIP = binding.NewString()
-	err := gui.deviceIP.Set("192.168.100.80")
+	err := gui.deviceIP.Set(prefIP)
 	if err != nil {
 		return nil, err
 	}
 
+	prefPort := app.Preferences().StringWithFallback(PREF_PORT, "22222")
 	gui.sshPort = binding.NewString()
-	err = gui.sshPort.Set("22222")
+	err = gui.sshPort.Set(prefPort)
 	if err != nil {
 		return nil, err
 	}
-
-	gui.sshKeyFile = binding.NewString()
 
 	homeDir, err := os.UserHomeDir()
-
 	if err != nil {
-		return nil, err
+		homeDir = ""
 	}
-
-	err = gui.sshKeyFile.Set(homeDir + "/.ssh/id_rsa")
+	prefPrivateKey := app.Preferences().StringWithFallback(PREF_PRIVATE_KEY, homeDir+"/.ssh/id_rsa")
+	gui.sshKeyFile = binding.NewString()
+	err = gui.sshKeyFile.Set(prefPrivateKey)
 	if err != nil {
 		return nil, err
 	}
 
 	vbox := container.NewVBox()
 	vbox.Add(widget.NewRichTextFromMarkdown("# Configuration"))
-	vbox.Add(newConfigSection(gui))
+	vbox.Add(newConfigSection(app, gui))
 	vbox.Add(widget.NewRichTextFromMarkdown("# Actions"))
 	vbox.Add(newActionsSection(gui))
 	vbox.Add(widget.NewRichTextFromMarkdown("# Results"))
@@ -104,17 +110,26 @@ func (gui *WisshGUI) SetButtonAction(action func()) {
 	gui.theButton.OnTapped = action
 }
 
-func newConfigSection(gui *WisshGUI) fyne.CanvasObject {
+func newConfigSection(app fyne.App, gui *WisshGUI) fyne.CanvasObject {
 	deviceIPEntry := widget.NewEntry()
 	deviceIPEntry.Bind(gui.deviceIP)
+	deviceIPEntry.OnChanged = func(s string) {
+		app.Preferences().SetString(PREF_IP, s)
+	}
 
 	// TODO: Can users change the SSH port on a device? Maybe this should simply
 	// be a constant. Or be hidden under some "advanced settings" things.
 	sshPortEntry := widget.NewEntry()
 	sshPortEntry.Bind(gui.sshPort)
+	sshPortEntry.OnChanged = func(s string) {
+		app.Preferences().SetString(PREF_PORT, s)
+	}
 
 	sshKeyFileEntry := widget.NewEntry()
 	sshKeyFileEntry.Bind(gui.sshKeyFile)
+	sshKeyFileEntry.OnChanged = func(s string) {
+		app.Preferences().SetString(PREF_PRIVATE_KEY, s)
+	}
 
 	form := widget.NewForm(
 		widget.NewFormItem("Device Local IP Address", deviceIPEntry),

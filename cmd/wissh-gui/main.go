@@ -9,10 +9,10 @@ import (
 )
 
 func main() {
-	a := app.New()
+	a := app.NewWithID("io.balena.experimental.wish")
 	w := a.NewWindow("Wissh")
 
-	gui, err := NewGUI(w)
+	gui, err := NewGUI(a, w)
 	if err != nil {
 		// TODO: We should at least try to show this (also) on a Window.
 		fmt.Fprintf(os.Stderr, "Oopsie, error initializing Wissh: %v\n", err)
