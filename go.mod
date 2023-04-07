@@ -5,6 +5,7 @@ go 1.19
 require (
 	fyne.io/fyne/v2 v2.3.0
 	golang.org/x/crypto v0.5.0
+	gopkg.in/ini.v1 v1.62.0
 )
 
 require (

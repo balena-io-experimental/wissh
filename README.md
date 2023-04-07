@@ -21,9 +21,14 @@ There are two steps:
 
 1. **Implement check.** In summary, a check is anything that implements the
    `wissh.Check` interface. We keep checks under `pkg/checks`, one check per
-   file. Check `pkg/checksping_api.go` for a simple example.
+   file.
 2. **Add your check to the list of checks to execute.** Just add it to the
    `checks.All()` function, in `pkg/checks/check_list.go`.
+
+For an example, take a look at `pkg/checks/ping_api.go` which is a simple one.
+For a more complex example, check `pkg/checks/static_ip_config.go`: this one
+does a good amount of processing on the data obtained via SSH to check for
+issues.
 
 ## Building
 
